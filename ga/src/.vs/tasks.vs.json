@@ -1,0 +1,15 @@
+{
+  "version": "0.2.1",
+  "tasks": [
+    {
+      "taskLabel": "task-gacplus",
+      "appliesTo": "gacplus.cpp",
+      "type": "launch"
+    },
+    {
+      "taskLabel": "task-src",
+      "appliesTo": "/",
+      "type": "launch"
+    }
+  ]
+}
