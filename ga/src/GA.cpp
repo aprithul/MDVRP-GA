@@ -13,11 +13,12 @@
 #include <vector>
 #include <algorithm>
 #include "Utils.h"
-
+#include <assert.h>
 std::vector<Customer> customers;
 std::vector<Depot> depots;
 
 GA::GA(const std::string& _data) {
+
 		
 #ifdef WIN32		
 		read_map_data("../../C-mdvrp/p01");
@@ -29,12 +30,16 @@ GA::GA(const std::string& _data) {
 
 
 	SetupOptions();
-	srand(options.randomSeed);
-
+	//srand(options.randomSeed);
+	//srand(time(NULL));
 }
 
 GA::~GA() {
 	// TODO Auto-generated destructor stub
+	customers.clear();
+	depots.clear();
+	delete parent;
+	delete child;
 }
 
 
@@ -129,13 +134,18 @@ void GA::read_map_data(const std::string& _file)
 
 void GA::cluster()
 {
+	/*for(auto& c : customers)
+	{
+		c.depot_id = IntInRange(1, depots.size()+1);
+	}*/
+
 	for (auto& c : customers)
 	{
 		int _min = INT_MAX;
 		for (auto& d : depots)
 		{
 			double _dist = 0;
-			if ( (_dist = eucledian_distance(d.x, d.y, c.x, c.y))< _min)
+			if ( (_dist = eucledian_distance(d.x, d.y, c.x, c.y)) < _min)
 			{
 				_min = _dist;
 				c.depot_id = d.id;
@@ -152,11 +162,12 @@ void GA::cluster()
 
 void GA::SetupOptions(){
 	options.randomSeed = 121;
-	options.popSize = 300;
+	options.popSize = 1000;
 	options.chromLength = customers.size();
-	options.maxgens = 2000;
-	options.px = 0.2f;//0.55f;
-	options.pm = 0.4f;
+	options.maxgens = 1000;
+	options.px = 1.f;//1.f;//0.2f;//0.55f;
+	options.pm = 0.5;
+	options.elit_percent = 0.1f;
 	options.infile = std::string ("infile");
 	options.outfile = std::string("outfile");
 }
@@ -165,14 +176,21 @@ void GA::Init(){
 	parent = new Population(options);
 	child  = new Population(options);
 	parent->Init(); // evaluates, stats, and reports on initial population
+	std::cout<<"Init:"<<std::endl;
 	parent->Statistics();
 	parent->Report(0);
-
+	std::cout<<"end"<<std::endl;
+	iterations = 1;
 	//parent->Test();
 }
 
 
-unsigned long int iterations = 1;
+
+static bool population_comp( Individual* a, Individual* b)
+{
+	return a->fitness>b->fitness;
+}
+
 void GA::Run(){
 
 #ifdef WIN32
@@ -181,11 +199,19 @@ void GA::Run(){
 	if(iterations < options.maxgens){
 #endif
 		parent->Generation(child);
-		child->Evaluate();
+		//child->Evaluate();	// not needed because iterated swap already evalutes the child during generation
 		child->Statistics();
 		child->Report(iterations);
 
-		//parent->LinearRankSelector();
+
+		// elitism
+		std::sort(parent->members, parent->members+options.popSize, population_comp);
+		std::sort(child->members, child->members+options.popSize, population_comp);
+		int elit_size = options.popSize * options.elit_percent;
+		for(int i=0; i<elit_size; i++)
+		{
+			parent->members[i]->copy_into( child->members[options.popSize-i-1]);
+		}
 
 		Population *tmp = parent;
 		parent = child;
@@ -193,4 +219,6 @@ void GA::Run(){
 
 		iterations++;
 	}
+
+	parent->Report_file();
 }

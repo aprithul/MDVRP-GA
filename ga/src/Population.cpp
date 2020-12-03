@@ -16,18 +16,47 @@
 #include <emscripten.h>
 #endif
 
+double Population::avg = -1;
+double Population::avgDist = -1;
+double Population::min = -1;
+double Population::minDist = -1;
+double Population::max = -1;
+double Population::sumFitness = -1;
+Individual* Population::best_solution = nullptr;// = new Individual();
+
 Population::Population(Options opts) {
 	options = opts;
 	avg = min = max = sumFitness = -1;
+	minDist = INT_MAX;
+	
 	assert(options.popSize <= MAXPOP);
+	for(int i=0; i<5; i++)
+	{
+		offsprings[i] = new Individual(options.chromLength);
+	}
+
+
 	for (int i = 0; i < options.popSize; i++){
 		members[i] = new Individual(options.chromLength);
 		members[i]->Init();
+		IteratedSwap(members[i]);
+	}
+
+	if(best_solution == nullptr)
+	{
+		best_solution = new Individual(options.chromLength);	
 	}
 }
 
 Population::~Population() {
 	// TODO Auto-generated destructor stub
+	for(int i=0; i<options.chromLength; i++)
+		delete members[i];
+
+	for(int i=0; i<5; i++)
+		delete offsprings[i];
+
+	delete best_solution;
 }
 
 void Population::Init(){
@@ -36,22 +65,40 @@ void Population::Init(){
 
 void Population::Evaluate(){
 	for (int i = 0; i < options.popSize; i++){
-		members[i]->fitness = Eval(members[i]);
+		auto res = Eval(members[i]);
+		members[i]->fitness = res.fitness;
+		members[i]->distance = res.distance;
 	}
 }
 
 void Population::Statistics(){
 	sumFitness = 0;
+	float sumDistance = 0;
 	min = members[0]->fitness;
 	max = members[0]->fitness;
+	auto _last = minDist;
+	int best_ind = -1;
 	for(int i = 0; i < options.popSize; i++){
 		sumFitness += members[i]->fitness;
+		sumDistance+= members[i]->distance;
 		if(min > members[i]->fitness)
 			min = members[i]->fitness;
 		if(max < members[i]->fitness)
 			max = members[i]->fitness;
+		if(members[i]->distance < minDist){
+			minDist = members[i]->distance;
+			best_ind = i;
+		}
 	}
+	//std::cout<<_last<<","<<minDist<<std::endl;
 	avg = sumFitness/options.popSize;
+	avgDist = sumDistance/options.popSize;
+	if(best_ind != -1)
+	{
+		members[best_ind]->copy_into(best_solution);
+		Calculate_route_len(best_solution, true);
+
+	}
 }
 
 #ifndef WIN32
@@ -61,13 +108,22 @@ EM_JS(void, call_js_update_chart, (double avg), {
 #endif
 
 void Population::Report(unsigned long int gen){
+#ifdef WIN32
 	char printbuf[1024];
-	sprintf(printbuf, "%4i \t %f \t %f \t %f\n ", (int)gen, min, avg, max);
-	WriteBufToFile(std::string(printbuf), options.outfile);
+	sprintf(printbuf, "%4i \t %f \t %f \t %f \t %f %f\n ", (int)gen, min, avg, max, avgDist, minDist);
+	//WriteBufToFile(std::string(printbuf), options.outfile);
+	
 	std::cout << printbuf;
-#ifndef WIN32
-	call_js_update_chart(avg);
+#else
+	call_js_update_chart(minDist);
 #endif
+}
+
+void Population::Report_file()
+{
+	char printbuf_2[128];
+	sprintf(printbuf_2, "%f\n", minDist);
+	WriteBufToFile(std::string(printbuf_2), options.outfile);
 }
 
 static bool comp(Individual* a, Individual* b)
@@ -96,6 +152,8 @@ void Population::Generation(Population *child){
 		c1 = child->members[ci1]; c2 = child->members[ci2];
 
 		XoverAndMutate(p1, p2, c1, c2);
+		IteratedSwap(c1);
+		IteratedSwap(c2);
 	}
 	//std::cout << x << "---" << y << std::endl;
 }
@@ -137,8 +195,7 @@ int Population::GetBest()
 
 int Population::NaryTournament(int n)
 {
-
-	int* indices = new int[n];
+	int indices[10];
 
 	for (int i = 0; i < n; i++)
 	{
@@ -257,8 +314,61 @@ void Population::OrderCrossover(int s, int e, Individual* p1, Individual* p2, In
 			c1_next = (c1_next + 1) % p2->chromLength;
 			gene_count--;
 		}
-
+		
 		i = (i + 1) % p2->chromLength;
 	}
 
+}
+
+void Population::IteratedSwap(Individual* individual)
+{
+	int count = 100;
+	EvaluationResult res = Eval(individual);
+	individual->fitness = res.fitness;
+	individual->distance = res.distance;
+
+	while(true)
+	{
+		int pos_1 = IntInRange(0, options.chromLength);
+		int pos_2 = IntInRange(0, options.chromLength);
+
+		if(pos_1 > pos_2)
+			std::swap(pos_1, pos_2);
+
+		individual->copy_into(offsprings[0]);
+		std::swap(offsprings[0]->chromosome[pos_1], offsprings[0]->chromosome[pos_2]);
+
+		offsprings[0]->copy_into(offsprings[1]);
+		std::swap(offsprings[1]->chromosome[pos_1], offsprings[1]->chromosome[ (options.chromLength+ pos_1-1)%options.chromLength]);
+
+		offsprings[0]->copy_into(offsprings[2]);
+		std::swap(offsprings[2]->chromosome[pos_1], offsprings[2]->chromosome[ (options.chromLength+ pos_1+1)%options.chromLength]);
+
+		offsprings[0]->copy_into(offsprings[3]);
+		std::swap(offsprings[3]->chromosome[pos_2], offsprings[3]->chromosome[ (options.chromLength+ pos_2-1)%options.chromLength]);
+
+		offsprings[0]->copy_into(offsprings[4]);
+		std::swap(offsprings[4]->chromosome[pos_2], offsprings[4]->chromosome[ (options.chromLength+ pos_2+1)%options.chromLength]);
+
+		bool found_better = false;
+		for(int i=0; i<5;i++)
+		{
+			auto off = offsprings[i];
+			EvaluationResult res = Eval(off);
+			off->fitness = res.fitness;
+			off->distance = res.distance;
+			if(off->fitness > individual->fitness)
+			{
+				found_better = true;
+				off->copy_into(individual);
+			}
+		}
+
+
+		if(!found_better)
+			break;
+
+		count--;
+		assert(count>0);
+	}
 }

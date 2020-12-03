@@ -8,7 +8,7 @@
 #ifndef CONST_H_
 #define CONST_H_
 
-#define MAXPOP 300
+#define MAXPOP 2000
 #define MAX_CHROMLENGTH 100
 
 

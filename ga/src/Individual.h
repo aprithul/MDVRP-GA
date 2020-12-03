@@ -10,6 +10,9 @@
 
 #include "Const.h"
 #include <vector>
+#include <cstring>
+#include <stack>
+
 struct Depot
 {
 	int id;
@@ -35,16 +38,20 @@ extern std::vector<Depot> depots;
 
 class Individual {
 public:
+	Individual();
 	Individual(int chromLen);
 	virtual ~Individual();
 
 	int chromLength;
 	int chromosome[MAX_CHROMLENGTH];
 	double fitness;
-
+	double distance;
+	
 	void Init();
 	void Mutate(double pm);
-
+	void Inversion_mutation();
+	void Swap_mutation();
+	void copy_into(Individual* individual);
 	void print_string();
 };
 

@@ -19,6 +19,8 @@ GA* ga;
 
 #ifdef WIN32
 int main(){
+	int count = 10;
+	while(count >0){
 	ga = new GA("");
 #else
 int RunGA(std::string _data) {
@@ -29,6 +31,8 @@ int RunGA(std::string _data) {
 #ifdef WIN32
 	ga->Run();
 	delete ga;
+	count--;
+}
 #endif
 
 	return 0;

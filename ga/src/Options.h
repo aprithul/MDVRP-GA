@@ -20,6 +20,7 @@ typedef struct {
 	unsigned int maxgens;
 	float px;
 	float pm;
+	float elit_percent;
 
 } Options;
 

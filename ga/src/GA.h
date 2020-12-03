@@ -11,7 +11,7 @@
 #include "Population.h"
 #include "Options.h"
 #include <string>
-
+#include <time.h>
 class GA {
 
 private:
@@ -26,14 +26,13 @@ public:
 	Population *parent;
 	Population *child;
 	Options options;
-
+	unsigned long int iterations;
 
 	void SetupOptions();
 	void read_map_data(const std::string& _file);
 	void cluster();
 	void Init();
 	void Run();
-
 };
 
 #endif /* GA_H_ */

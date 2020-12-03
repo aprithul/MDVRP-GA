@@ -1595,6 +1595,9 @@ var ASM_CONSTS = {
   
 };
 function call_js_update_chart(avg){ update_chart(avg); }
+function clear_canvas(){ clear_canvas(); }
+function draw_edge(x1,y1,x2,y2){ draw_edge(x1, y1, x2, y2); }
+function draw_node(x,y,is_depot){ draw_node(x,y,is_depot); }
 
 
 
@@ -5741,6 +5744,9 @@ var asmLibraryArg = {
   "_embind_register_void": __embind_register_void,
   "abort": _abort,
   "call_js_update_chart": call_js_update_chart,
+  "clear_canvas": clear_canvas,
+  "draw_edge": draw_edge,
+  "draw_node": draw_node,
   "emscripten_memcpy_big": _emscripten_memcpy_big,
   "emscripten_resize_heap": _emscripten_resize_heap,
   "environ_get": _environ_get,
@@ -5756,6 +5762,15 @@ var asmLibraryArg = {
 var asm = createWasm();
 /** @type {function(...*):?} */
 var ___wasm_call_ctors = Module["___wasm_call_ctors"] = createExportWrapper("__wasm_call_ctors");
+
+/** @type {function(...*):?} */
+var ___em_js__clear_canvas = Module["___em_js__clear_canvas"] = createExportWrapper("__em_js__clear_canvas");
+
+/** @type {function(...*):?} */
+var ___em_js__draw_node = Module["___em_js__draw_node"] = createExportWrapper("__em_js__draw_node");
+
+/** @type {function(...*):?} */
+var ___em_js__draw_edge = Module["___em_js__draw_edge"] = createExportWrapper("__em_js__draw_edge");
 
 /** @type {function(...*):?} */
 var ___em_js__call_js_update_chart = Module["___em_js__call_js_update_chart"] = createExportWrapper("__em_js__call_js_update_chart");

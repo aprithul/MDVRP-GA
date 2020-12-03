@@ -11,7 +11,16 @@
 #include "Individual.h"
 #include <vector>
 
-double Eval(Individual *individual);
+
+struct EvaluationResult
+{
+	float fitness;
+	float distance;
+};
+
+
+EvaluationResult Eval(Individual *individual);
+float Calculate_route_len(Individual* individual, bool draw_in_js);
 
 extern std::vector<Customer> customers;
 extern std::vector<Depot> depots;
