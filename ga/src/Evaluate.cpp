@@ -46,7 +46,7 @@ int get_depot_id_from_customer_index(int cust_index)
 void draw_edge_js(double x1, double y1, double x2, double y2)
 {
 	#ifndef WIN32
-	draw_edge(x1*10, y1*10, x2*10, y2*10);
+	draw_edge(x1, y1, x2, y2);
 	#endif
 }
 
@@ -58,12 +58,12 @@ float Calculate_route_len(Individual* individual, bool draw_in_js)
 		
 			for(auto d: depots)
 			{
-				draw_node(d.x*10, d.y*10, true);
+				draw_node(d.x, d.y, true);
 			}
 
 			for(auto c:customers)
 			{
-				draw_node(c.x*10, c.y*10, false);
+				draw_node(c.x, c.y, false);
 			}
 		}
 	#endif

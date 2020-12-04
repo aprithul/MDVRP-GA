@@ -102,8 +102,8 @@ void Population::Statistics(){
 }
 
 #ifndef WIN32
-EM_JS(void, call_js_update_chart, (double avg), {
-	update_chart(avg);
+EM_JS(void, call_js_update_chart, (double best, double avg), {
+	update_chart(best, avg);
 });
 #endif
 
@@ -115,7 +115,7 @@ void Population::Report(unsigned long int gen){
 	
 	std::cout << printbuf;
 #else
-	call_js_update_chart(minDist);
+	call_js_update_chart(minDist, avgDist);
 #endif
 }
 

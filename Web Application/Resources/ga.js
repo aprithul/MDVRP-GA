@@ -1594,7 +1594,7 @@ var tempI64;
 var ASM_CONSTS = {
   
 };
-function call_js_update_chart(avg){ update_chart(avg); }
+function call_js_update_chart(best,avg){ update_chart(best, avg); }
 function clear_canvas(){ clear_canvas(); }
 function draw_edge(x1,y1,x2,y2){ draw_edge(x1, y1, x2, y2); }
 function draw_node(x,y,is_depot){ draw_node(x,y,is_depot); }
