@@ -50,7 +50,7 @@ void draw_edge_js(double x1, double y1, double x2, double y2)
 	#endif
 }
 
-float Calculate_route_len(Individual* individual, bool draw_in_js)
+float Calculate_route_len(Individual* individual, bool draw_in_js, std::vector<int>* routes)
 {
 	#ifndef WIN32
 		if(draw_in_js){
@@ -101,6 +101,7 @@ float Calculate_route_len(Individual* individual, bool draw_in_js)
 				if(draw_in_js)
 					draw_edge_js( depot.x, depot.y, cust.x, cust.y);
 				remaining_cap = depot.capacity - cust.demand;
+				if(routes != nullptr) routes->push_back(i-1);
 			}
 
 		}
@@ -116,14 +117,17 @@ float Calculate_route_len(Individual* individual, bool draw_in_js)
 			if(draw_in_js)
 				draw_edge_js( depot.x, depot.y, cust.x, cust.y);			
 			remaining_cap = depot.capacity - cust.demand;
+			if(routes != nullptr) routes->push_back(i-1);
 		}
 //std::cout<<cust.id<<" : "<<cust.demand<<std::endl;
 
 		i++;
 	}
-	route_length +=eucledian_distance( depot.x, depot.y, cust.x, cust.y);
+	route_length += eucledian_distance( depot.x, depot.y, cust.x, cust.y);
 	if(draw_in_js)
 		draw_edge_js( depot.x, depot.y, cust.x, cust.y);			
+	if(routes != nullptr) routes->push_back(i-1);
+
 //std::cout<< "End depot: "<<depot.id<<std::endl;
 //assert(false);
 	return route_length;
@@ -131,7 +135,7 @@ float Calculate_route_len(Individual* individual, bool draw_in_js)
 
 EvaluationResult Eval(Individual *individual){
 
-	float route_length = Calculate_route_len(individual, false);
+	float route_length = Calculate_route_len(individual, false, nullptr);
 
 	/*int depot_ind = 0;
 	double remaining_cap = depots[depot_ind].capacity;

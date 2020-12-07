@@ -12,6 +12,7 @@
 #include <vector>
 #include <cstring>
 #include <stack>
+#include <tuple>
 
 struct Depot
 {
@@ -43,6 +44,7 @@ public:
 	virtual ~Individual();
 
 	int chromLength;
+	std::vector<std::tuple<int, int, int >> depot_ranges;
 	int chromosome[MAX_CHROMLENGTH];
 	double fitness;
 	double distance;

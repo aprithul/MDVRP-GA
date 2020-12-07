@@ -20,7 +20,7 @@ struct EvaluationResult
 
 
 EvaluationResult Eval(Individual *individual);
-float Calculate_route_len(Individual* individual, bool draw_in_js);
+float Calculate_route_len(Individual* individual, bool draw_in_js, std::vector<int>* routes);
 
 extern std::vector<Customer> customers;
 extern std::vector<Depot> depots;

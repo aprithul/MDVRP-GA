@@ -22,7 +22,7 @@ double Population::min = -1;
 double Population::minDist = -1;
 double Population::max = -1;
 double Population::sumFitness = -1;
-Individual* Population::best_solution = nullptr;// = new Individual();
+//Individual* Population::best_solution = nullptr;// = new Individual();
 
 Population::Population(Options opts) {
 	options = opts;
@@ -42,21 +42,22 @@ Population::Population(Options opts) {
 		IteratedSwap(members[i]);
 	}
 
-	if(best_solution == nullptr)
-	{
+	//if(best_solution == nullptr)
+	//{
 		best_solution = new Individual(options.chromLength);	
-	}
+	//}
 }
 
 Population::~Population() {
 	// TODO Auto-generated destructor stub
 	for(int i=0; i<options.chromLength; i++)
 		delete members[i];
-
 	for(int i=0; i<5; i++)
 		delete offsprings[i];
 
-	delete best_solution;
+	if(best_solution != nullptr)
+		delete best_solution;
+	best_solution = nullptr;
 }
 
 void Population::Init(){
@@ -96,7 +97,7 @@ void Population::Statistics(){
 	if(best_ind != -1)
 	{
 		members[best_ind]->copy_into(best_solution);
-		Calculate_route_len(best_solution, true);
+		Calculate_route_len(best_solution, true, nullptr);
 
 	}
 }

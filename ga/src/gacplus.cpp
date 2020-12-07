@@ -13,6 +13,7 @@
 #endif
 
 #include "GA.h"
+#include <iostream>
 //using namespace emscripten;
 
 GA* ga;
@@ -32,6 +33,7 @@ int RunGA(std::string _data) {
 	ga->Run();
 	delete ga;
 	count--;
+	//std::cout<<"count: "<<count<<std::endl;
 }
 #endif
 

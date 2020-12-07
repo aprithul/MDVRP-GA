@@ -28,10 +28,9 @@ GA::GA(const std::string& _data) {
 	cluster();
 
 
-
 	SetupOptions();
 	//srand(options.randomSeed);
-	//srand(time(NULL));
+	srand(time(NULL));
 }
 
 GA::~GA() {
@@ -138,7 +137,7 @@ void GA::cluster()
 	{
 		c.depot_id = IntInRange(1, depots.size()+1);
 	}*/
-
+	
 	for (auto& c : customers)
 	{
 		int _min = INT_MAX;
@@ -165,8 +164,8 @@ void GA::SetupOptions(){
 	options.popSize = 1000;
 	options.chromLength = customers.size();
 	options.maxgens = 1000;
-	options.px = 1.f;//1.f;//0.2f;//0.55f;
-	options.pm = 0.5;
+	options.px = 0.5f;//1.f;//0.2f;//0.55f;
+	options.pm = 0.5f;
 	options.elit_percent = 0.1f;
 	options.infile = std::string ("infile");
 	options.outfile = std::string("outfile");

@@ -22,7 +22,7 @@ public:
 	Individual *members[MAXPOP];
 	double rank_probability[MAXPOP];
 	static double avg, avgDist, min, minDist, max, sumFitness;
-	static Individual* best_solution;
+	Individual* best_solution;
 
 	void Init();
 	void Evaluate();
