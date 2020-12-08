@@ -14,7 +14,7 @@
 
 class Population {
 public:
-	Population(Options options);
+	Population(Options options, Population* other);
 	virtual ~Population();
 	//------------------------
 	Options options;

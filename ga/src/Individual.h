@@ -50,11 +50,14 @@ public:
 	double distance;
 	
 	void Init();
+	void Init(Individual* other);
 	void Mutate(double pm);
 	void Inversion_mutation();
 	void Swap_mutation();
 	void copy_into(Individual* individual);
 	void print_string();
+	void SavingMethod(std::vector<std::tuple<int, int, int >>& depot_ranges);
+
 };
 
 #endif /* INDIVIDUAL_H_ */

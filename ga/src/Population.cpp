@@ -24,7 +24,7 @@ double Population::max = -1;
 double Population::sumFitness = -1;
 //Individual* Population::best_solution = nullptr;// = new Individual();
 
-Population::Population(Options opts) {
+Population::Population(Options opts, Population* other) {
 	options = opts;
 	avg = min = max = sumFitness = -1;
 	minDist = INT_MAX;
@@ -35,12 +35,27 @@ Population::Population(Options opts) {
 		offsprings[i] = new Individual(options.chromLength);
 	}
 
-
-	for (int i = 0; i < options.popSize; i++){
-		members[i] = new Individual(options.chromLength);
-		members[i]->Init();
-		IteratedSwap(members[i]);
+	if(other != nullptr)
+	{
+		for (int i = 0; i < options.popSize; i++)
+		{
+			members[i] = new Individual(options.chromLength);
+			members[i]->Init(other->members[i]);
+		}
 	}
+	else
+	{
+		members[0] = new Individual(options.chromLength);
+		members[0]->Init();
+		for (int i = 1; i < options.popSize; i++)
+		{
+			members[i] = new Individual(options.chromLength);
+			members[i]->Init(members[0]);
+			IteratedSwap(members[i]);
+		}
+		IteratedSwap(members[0]);
+	}
+	
 
 	//if(best_solution == nullptr)
 	//{
@@ -98,6 +113,15 @@ void Population::Statistics(){
 	{
 		members[best_ind]->copy_into(best_solution);
 		Calculate_route_len(best_solution, true, nullptr);
+		if(best_solution->distance < 473)
+		{
+			for(int i=0; i<best_solution->chromLength;i++)
+			{
+				std::cout<<best_solution->chromosome[i]<<"-";
+			}
+			std::cout<<std::endl;
+			assert(false);
+		}
 
 	}
 }
