@@ -21,16 +21,16 @@ GA::GA(const std::string& _data) {
 
 		
 #ifdef WIN32		
-		read_map_data("../../C-mdvrp/p06");
+		read_map_data("../../C-mdvrp/p04");
 #else
 		read_map_data(_data);
 #endif
 	cluster();
 
 
-	SetupOptions();
+	//SetupOptions();
 	//srand(options.randomSeed);
-	srand(time(NULL));
+	//srand(time(NULL));
 }
 
 GA::~GA() {
@@ -163,15 +163,30 @@ void GA::SetupOptions(){
 	options.randomSeed = 121;
 	options.popSize = 1000;
 	options.chromLength = customers.size();
-	options.maxgens = 1000;
-	options.px = 0.95f;//1.f;//0.2f;//0.55f;
+	options.maxgens = 250;
+	options.px = 0.75;//0.5f;//1.f;//0.2f;//0.55f;
 	options.pm = 0.5f;
-	options.elit_percent = 0.1f;
+	options.elit_percent = 0.1f;//0.1f;
 	options.infile = std::string ("infile");
 	options.outfile = std::string("outfile");
 }
 
+void GA::SetupOptions(int gen, float px, float pm){
+	options.randomSeed = time(NULL);
+	options.popSize = 1000;
+	options.chromLength = customers.size();
+	options.maxgens = gen;
+	options.px = px;//0.5f;//1.f;//0.2f;//0.55f;
+	options.pm = pm;
+	options.elit_percent = 0.1f;//0.1f;
+	options.infile = std::string ("infile");
+	options.outfile = std::string("outfile");
+
+	std::cout<<"from c++: "<<px<<","<<pm<<","<<std::endl;
+}
+
 void GA::Init(){
+	srand(time(NULL));
 	parent = new Population(options, nullptr);
 	child  = new Population(options, parent);
 	parent->Init(); // evaluates, stats, and reports on initial population

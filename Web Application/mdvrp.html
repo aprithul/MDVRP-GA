@@ -48,7 +48,7 @@
 		<div class="col">
 			<div class="form-group">
 				
-				<textarea class="form-control" id="mdvrpDataTextArea" cols="50" rows="15">
+				<textarea class="form-control" id="mdvrpDataTextArea" cols="50" rows="10">
 2 4 50 4
 0 80
 0 80
@@ -110,7 +110,23 @@
 54 60 50 0   0 0 0
 				</textarea>
 				<br>
-				<button type="submit" class="btn btn-primary mb-2" onclick="on_load_callback()">Find Solution</button>
+				<div class="row">
+					<div class="col">
+						<label for="px">Crossover</label>
+						<input type="number" step="0.05" min="0" max="1.0" class="form-control" id="px" placeholder="0.75">
+					</div>
+					<div class="col">
+						<label for="pm">Mutation</label>
+						<input type="number" step="0.05" min="0" max="1.0" class="form-control" id="pm" placeholder="0.5">
+					</div>
+					<div class="col">
+						<label for="gen">Generations</label>
+						<input type="number" step="50" min="0" max="2000"class="form-control" id="gen" placeholder="150">
+					  </div>
+				  </div>
+
+				  <br>
+				<button type="submit" class="btn btn-primary mb-2" id="solve button" onclick="on_load_callback()">Find Solution</button>
 				<button type="submit" class="btn btn-primary mb-2" onclick="on_reset_callback()">Reset</button>
 			</div>
 		</div>
@@ -125,15 +141,43 @@
 </div>
 
 <script>
+
+	function clamp(x, _min, _max)
+	{
+	 	return Math.min(Math.max(x, _min), _max);
+
+	}
 	function on_load_callback()
 	{
 		Module.delete_ga();
 		var _data = document.getElementById("mdvrpDataTextArea").value;
+		var _px = parseFloat(document.getElementById("px").value);
+		if(isNaN(_px))
+			_px = 0.75;
+		else
+			_px = clamp(_px, 0.0,1.0);
+
+		var _pm = parseFloat(document.getElementById("pm").value);
+		if(isNaN(_pm))
+			_pm = 0.5;
+		else
+			_pm = clamp(_pm, 0.0,1.0);
+
+		var _gen = parseInt(document.getElementById("gen").value);
+		if(isNaN(_gen))
+			_gen = 150;
+		else
+			_gen = clamp(_gen, 0, 100000);
+			
+		
+			console.log(_gen +" , "+_px+" , "+_pm);
+
 		if(_data.length==0)
 			alert('No data in textarea');
 		else{
 			console.log('Running GA: ');
-			Module.RunGA(_data);
+			Module.RunGA(_data, _gen, _px, _pm);
+			document.getElementById("solve button").disabled = true;
 			setInterval(Module.ga_run_caller, 0);
 			//Module.ga_run_caller();
 		}

@@ -57,7 +57,7 @@ public:
 	void copy_into(Individual* individual);
 	void print_string();
 	void SavingMethod(std::vector<std::tuple<int, int, int >>& depot_ranges);
-
+	void NearestNeighbour(Depot& d, std::vector<int>& route);
 };
 
 #endif /* INDIVIDUAL_H_ */

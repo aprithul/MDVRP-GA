@@ -23,9 +23,11 @@ int main(){
 	int count = 10;
 	while(count >0){
 	ga = new GA("");
+	ga->SetupOptions();
 #else
-int RunGA(std::string _data) {
+int RunGA(std::string _data, int gen, float px, float pm) {
 	ga = new GA(_data);
+	ga->SetupOptions(gen, px, pm);
 #endif
 	ga->Init();
 
@@ -56,6 +58,6 @@ EMSCRIPTEN_BINDINGS(my_module) {
 	emscripten::function("RunGA", &RunGA);
     emscripten::function("ga_run_caller", &ga_run_caller);
     emscripten::function("delete_ga", &delete_ga);
-
+	
 }
 #endif

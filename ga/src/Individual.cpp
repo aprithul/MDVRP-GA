@@ -78,6 +78,50 @@ double calculate_route_demand(const std::vector<int> _route)
 	return _demand;
 }
 
+
+void Individual::NearestNeighbour(Depot& d, std::vector<int>& route)
+{
+	//Calculate_route_len(this, false, &routes);
+
+	int s = 0;
+	int _ind = -1;
+	
+	double _min = INT_MAX;
+	for(int _i = 0; _i<route.size(); _i++)
+	{
+		double _dist = eucledian_distance(d.x, d.y, customers[route[_i]].x, customers[route[_i]].y);
+		if( _dist < _min)
+		{
+			_min = _dist;
+			_ind = _i;
+		}
+	}
+
+	int cid = route[_ind];
+	auto lc = customers[cid - 1];
+	std::swap(route[s], route[_ind]);
+
+	for(int _n=s+1; _n<route.size(); _n++ )
+	{
+		float _min = INT_MAX;
+		int _min_i = _n;
+		for(int i= _n+1; i<route.size(); i++)
+		{
+			auto nc = customers[route[i] -1];
+			float _dist = eucledian_distance( lc.x, lc.y, nc.x, nc.y );
+			if(_dist < _min)
+			{
+				_min = _dist;
+				_min_i = i;
+				lc = nc;
+			}
+		}
+		std::swap(route[_n], route[_min_i]);
+
+	}
+
+}
+
 void Individual::SavingMethod(std::vector<std::tuple<int, int, int >>& depot_ranges)
 {
 
@@ -105,7 +149,7 @@ void Individual::SavingMethod(std::vector<std::tuple<int, int, int >>& depot_ran
 			{
 				Customer c_j = customers[ chromosome[j] - 1];
 				//std::cout<<i<<","<<j<<","<<_range<<std::endl;
-				auto saving_value = eucledian_distance(_d.x, _d.y, c_i.x, c_i.y) + eucledian_distance(_d.x, _d.y, c_j.x, c_j.y) - eucledian_distance(c_i.x, c_i.y, c_j.x, c_j.y);
+				float saving_value = eucledian_distance(_d.x, _d.y, c_i.x, c_i.y) + eucledian_distance(_d.x, _d.y, c_j.x, c_j.y) - eucledian_distance(c_i.x, c_i.y, c_j.x, c_j.y);
 				//std::cout<<" got saving_value "<<saving_value<< std::endl;
 				saving_matrix[ ( (i-_s)*_range) + (j-_s)] = saving_value;
 				Saving _s{saving_value, c_i.id, c_j.id};
@@ -221,6 +265,7 @@ void Individual::SavingMethod(std::vector<std::tuple<int, int, int >>& depot_ran
 		for(auto r:routes)
 		{
 			double _demand = 0;
+			//NearestNeighbour(_d, r);
 			for(auto c:r)
 			{
 				_demand+= customers[c-1].demand;
@@ -280,6 +325,7 @@ void Individual::Init(){
 	}
 	depot_ranges.push_back( std::make_tuple(d_id, s, _i-1));
 	
+	
 	SavingMethod(depot_ranges);
 	for(int i=0; i<chromLength; i++)
 	{
@@ -294,40 +340,7 @@ void Individual::Init(){
 
 
 	// NN scheduling
-	/*std::vector<int> routes;
-	Calculate_route_len(this, false, &routes);
-
-	s = 0;
-	for(auto r : routes)
-	{
-		std::vector<int> others;
-		int lc_ind = IntInRange(s,r+1);
-		auto lc = customers[chromosome[lc_ind] - 1];
-		std::swap(chromosome[s], chromosome[lc_ind]);
-
-
-		for(int _n=s+1; _n<=r; _n++ )
-		{
-			float _min = INT_MAX;
-			int _min_i = _n;
-			for(int i= _n+1; i<=r; i++)
-			{
-				auto nc = customers[chromosome[i] -1];
-				float _dist = eucledian_distance( lc.x, lc.y, nc.x, nc.y );
-				if(_dist < _min)
-				{
-					_min = _dist;
-					_min_i = i;
-					lc = nc;
-				}
-			}
-			std::swap(chromosome[_n], chromosome[_min_i]);
-
-		}
-
-	}
-
-*/
+	
 
 
 	

@@ -29,6 +29,7 @@ public:
 	unsigned long int iterations;
 
 	void SetupOptions();
+	void SetupOptions(int gen, float px, float pm);
 	void read_map_data(const std::string& _file);
 	void cluster();
 	void Init();
