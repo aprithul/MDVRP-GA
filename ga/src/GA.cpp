@@ -21,7 +21,7 @@ GA::GA(const std::string& _data) {
 
 		
 #ifdef WIN32		
-		read_map_data("../../C-mdvrp/p04");
+		read_map_data("../../C-mdvrp/p06");
 #else
 		read_map_data(_data);
 #endif
@@ -160,10 +160,10 @@ void GA::cluster()
 }
 
 void GA::SetupOptions(){
-	options.randomSeed = 121;
+	options.randomSeed = time(NULL);// 121;
 	options.popSize = 1000;
 	options.chromLength = customers.size();
-	options.maxgens = 250;
+	options.maxgens = 400;
 	options.px = 0.75;//0.5f;//1.f;//0.2f;//0.55f;
 	options.pm = 0.5f;
 	options.elit_percent = 0.1f;//0.1f;
@@ -186,7 +186,8 @@ void GA::SetupOptions(int gen, float px, float pm){
 }
 
 void GA::Init(){
-	srand(time(NULL));
+	//srand(time(NULL));
+	srand(options.randomSeed);
 	parent = new Population(options, nullptr);
 	child  = new Population(options, parent);
 	parent->Init(); // evaluates, stats, and reports on initial population

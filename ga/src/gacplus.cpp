@@ -12,6 +12,7 @@
 #include <emscripten/bind.h>
 #endif
 
+#include <ctime>
 #include "GA.h"
 #include <iostream>
 //using namespace emscripten;
@@ -20,7 +21,8 @@ GA* ga;
 
 #ifdef WIN32
 int main(){
-	int count = 10;
+	const clock_t begin_time = clock();
+	int count = 30;
 	while(count >0){
 	ga = new GA("");
 	ga->SetupOptions();
@@ -33,6 +35,7 @@ int RunGA(std::string _data, int gen, float px, float pm) {
 
 #ifdef WIN32
 	ga->Run();
+	std::cout <<"Time taken : "<< float( clock () - begin_time ) /  CLOCKS_PER_SEC;
 	delete ga;
 	count--;
 	//std::cout<<"count: "<<count<<std::endl;

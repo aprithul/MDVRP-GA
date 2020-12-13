@@ -1,0 +1,12 @@
+
+
+@article{salhi1999cluster,
+  title={A cluster insertion heuristic for single and multiple depot vehicle routing problems with backhauling},
+  author={Salhi, Sa{\"\i}d and Nagy, G{\'a}bor},
+  journal={Journal of the operational Research Society},
+  volume={50},
+  number={10},
+  pages={1034--1042},
+  year={1999},
+  publisher={Taylor \& Francis}
+}

@@ -81,45 +81,31 @@ double calculate_route_demand(const std::vector<int> _route)
 
 void Individual::NearestNeighbour(Depot& d, std::vector<int>& route)
 {
-	//Calculate_route_len(this, false, &routes);
+	float last_x = d.x;
+	float last_y = d.y;
 
-	int s = 0;
-	int _ind = -1;
-	
-	double _min = INT_MAX;
-	for(int _i = 0; _i<route.size(); _i++)
+	int _ind = 0;
+
+	while(_ind < route.size())
 	{
-		double _dist = eucledian_distance(d.x, d.y, customers[route[_i]].x, customers[route[_i]].y);
-		if( _dist < _min)
+		float min_dist = INT_MAX;
+		int closest_cust_ind = 0;
+		for(int i=_ind; i<route.size(); i++)
 		{
-			_min = _dist;
-			_ind = _i;
-		}
-	}
-
-	int cid = route[_ind];
-	auto lc = customers[cid - 1];
-	std::swap(route[s], route[_ind]);
-
-	for(int _n=s+1; _n<route.size(); _n++ )
-	{
-		float _min = INT_MAX;
-		int _min_i = _n;
-		for(int i= _n+1; i<route.size(); i++)
-		{
-			auto nc = customers[route[i] -1];
-			float _dist = eucledian_distance( lc.x, lc.y, nc.x, nc.y );
-			if(_dist < _min)
+			auto _cust = customers[route[i]-1];
+			auto _dist = eucledian_distance(last_x, last_y, _cust.x, _cust.y);
+			if(_dist < min_dist)
 			{
-				_min = _dist;
-				_min_i = i;
-				lc = nc;
+				min_dist = _dist;
+				closest_cust_ind = i;
 			}
 		}
-		std::swap(route[_n], route[_min_i]);
 
+		last_x = customers[ route[closest_cust_ind]-1].x;
+		last_y = customers[ route[closest_cust_ind]-1].y;
+		std::swap( route[closest_cust_ind], route[_ind]);
+		_ind++;
 	}
-
 }
 
 void Individual::SavingMethod(std::vector<std::tuple<int, int, int >>& depot_ranges)
@@ -265,16 +251,25 @@ void Individual::SavingMethod(std::vector<std::tuple<int, int, int >>& depot_ran
 		for(auto r:routes)
 		{
 			double _demand = 0;
-			//NearestNeighbour(_d, r);
+			NearestNeighbour(_d, r);
+			auto _dist = 0;
+			int last = -1;
 			for(auto c:r)
 			{
 				_demand+= customers[c-1].demand;
 				chromosome[chrom_ind] = c;
 				chrom_ind++;
 				pq.push(c);
+				if(last != -1)
+				{
+					auto c1 = customers[last-1];
+					auto c2 = customers[c-1];
+					_dist += eucledian_distance(c1.x, c1.y, c2.x, c2.y);
+				}
+				last = c;
 				std::cout<<c<<"-";
 			}
-			std::cout<<" : "<<_demand<<std::endl;
+			std::cout<<" : "<<_dist<<std::endl;
 		}
 
 
@@ -302,6 +297,15 @@ void Individual::Init(Individual* other)
 }
 
 void Individual::Init(){
+
+
+	//auto _dist1 = eucledian_distance( customers[68-1].x, customers[68-1].y , customers[2-1].x, customers[2-1].y) ;
+	//auto _dist2 = eucledian_distance( customers[68-1].x, customers[68-1].y , customers[6-1].x, customers[6-1].y) ;
+						
+	
+	//std::cout<<_dist1<<","<<_dist2<<std::endl;
+	//assert(false);
+
 
 	for(int i=0; i<chromLength; i++)
 	{
