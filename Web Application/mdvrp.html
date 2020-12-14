@@ -35,6 +35,8 @@
 <body>
 <div class="header">
 	<center><font color="blue" size="5">Multi-Depot Vehicle Routing Problem</font><br>
+	Based upon <a href="https://www.sciencedirect.com/science/article/pii/S0952197607000887"> A hybrid genetic algorithm for the multi-depot vehicle routing problem</a><br>by William Ho, George T.S.Ho, Ping Ji and Henry C.W.Lau
+	<br>and<br>
 	Based upon <a href="http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.207.9651&rep=rep1&type=pdf"> Solution To Multi-Depot Vehicle Routing Problem Using Genetic Algorithms</a><br>by Surekha P* and Dr. S. Sumathi
 	</font>
 	</center>
@@ -202,7 +204,7 @@
 		  zeroline: false
 		},
 		yaxis: {
-		  title: 'Distance',
+		  title: 'length',
 		  showline: false
 		}
 	  };
@@ -210,11 +212,11 @@
 	Plotly.plot('chart',[{
 		y:[],
 		type:'line',
-		name:'best solution distance'
+		name:'best solution length'
 	},{
 		y:[],
 		type:'line',
-		name:'average distance'
+		name:'average length'
 	}], layout,{displayModeBar: false});
 
 	function update_chart(_best, _avg)

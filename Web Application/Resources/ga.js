@@ -5643,14 +5643,6 @@ function draw_node(x,y,is_depot){ draw_node(x,y,is_depot); }
   function _strftime_l(s, maxsize, format, tm) {
       return _strftime(s, maxsize, format, tm); // no locale support yet
     }
-
-  function _time(ptr) {
-      var ret = (Date.now()/1000)|0;
-      if (ptr) {
-        HEAP32[((ptr)>>2)]=ret;
-      }
-      return ret;
-    }
 var FSNode = /** @constructor */ function(parent, name, mode, rdev) {
     if (!parent) {
       parent = this;  // root node sets parent to itself
@@ -5765,8 +5757,7 @@ var asmLibraryArg = {
   "fd_write": _fd_write,
   "memory": wasmMemory,
   "setTempRet0": _setTempRet0,
-  "strftime_l": _strftime_l,
-  "time": _time
+  "strftime_l": _strftime_l
 };
 var asm = createWasm();
 /** @type {function(...*):?} */

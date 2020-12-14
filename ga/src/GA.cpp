@@ -21,7 +21,7 @@ GA::GA(const std::string& _data) {
 
 		
 #ifdef WIN32		
-		read_map_data("../../C-mdvrp/p06");
+		read_map_data("../../C-mdvrp/p03");
 #else
 		read_map_data(_data);
 #endif
@@ -160,7 +160,7 @@ void GA::cluster()
 }
 
 void GA::SetupOptions(){
-	options.randomSeed = time(NULL);// 121;
+	options.randomSeed =  121;
 	options.popSize = 1000;
 	options.chromLength = customers.size();
 	options.maxgens = 400;
@@ -172,7 +172,7 @@ void GA::SetupOptions(){
 }
 
 void GA::SetupOptions(int gen, float px, float pm){
-	options.randomSeed = time(NULL);
+	options.randomSeed = 121;//time(NULL);
 	options.popSize = 1000;
 	options.chromLength = customers.size();
 	options.maxgens = gen;

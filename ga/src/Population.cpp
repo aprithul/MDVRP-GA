@@ -52,7 +52,13 @@ Population::Population(Options opts, Population* other) {
 			members[i] = new Individual(options.chromLength);
 			members[i]->Init(members[0]);
 			IteratedSwap(members[i]);
+			//EvaluationResult res = Eval(members[i]);
+			//members[i]->fitness = res.fitness;
+			//members[i]->distance = res.distance;
 		}
+		//EvaluationResult res = Eval(members[0]);
+		//members[0]->fitness = res.fitness;
+		//members[0]->distance = res.distance;
 		IteratedSwap(members[0]);
 	}
 	
@@ -177,6 +183,13 @@ void Population::Generation(Population *child){
 		c1 = child->members[ci1]; c2 = child->members[ci2];
 
 		XoverAndMutate(p1, p2, c1, c2);
+		EvaluationResult res = Eval(c1);
+		//c1->fitness = res.fitness;
+		//c1->distance = res.distance;
+		//res = Eval(c2);
+		//c2->fitness = res.fitness;
+		//c2->distance = res.distance;
+
 		IteratedSwap(c1);
 		IteratedSwap(c2);
 	}

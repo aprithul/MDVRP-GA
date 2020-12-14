@@ -22,7 +22,7 @@ GA* ga;
 #ifdef WIN32
 int main(){
 	const clock_t begin_time = clock();
-	int count = 30;
+	int count = 1;
 	while(count >0){
 	ga = new GA("");
 	ga->SetupOptions();
