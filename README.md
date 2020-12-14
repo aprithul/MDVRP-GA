@@ -7,7 +7,7 @@ Contents:
   4. Web Application -> html/js web application. Uses plotly for graphing.
  
 
-# How to host the web application
+# How to host
 Copy contents of the 'Web Application' folder into your host's root directory. The application should now be acceesible at: 
 ```
 {your domain name}/mdvrp.html
@@ -15,7 +15,7 @@ Copy contents of the 'Web Application' folder into your host's root directory. T
 Depending on your host, you may need to rename 'mdvrp.html' to 'index.html'
 
 
-# Instructions on compiling
+# Instructions for compiling
 Note: All paths are relative to the root of the project.
 
 1) Step 1.
